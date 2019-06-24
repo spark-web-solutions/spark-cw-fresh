@@ -19,6 +19,6 @@ Embed the FRESH daily devotional from christianityworks on your site.
 
 == Installation ==
 
-1. Upload the `spark-cw-fresh.zip` via Plugins -> Add New
-   Alternately extract the zip file and upload the `spark-cw-fresh` folder to the `/wp-content/plugins/` directory
-1. Activate the plugin through the 'Plugins' menu in WordPress
+1. Upload `spark-cw-fresh.zip` via Plugins -> Add New. Alternately extract the zip file and upload the `spark-cw-fresh` folder to the `/wp-content/plugins/` directory via FTP.
+1. Activate the plugin through the 'Plugins' menu in WordPress.
+1. Select your preferred language in FRESH -> Settings.
