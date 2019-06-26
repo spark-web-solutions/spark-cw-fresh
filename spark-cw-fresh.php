@@ -18,8 +18,7 @@
  * Version: 1.0.0
  * Author: Spark Web Solutions
  * Author URI: https://sparkweb.com.au
- * License: GPL-2.0+
- * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
+ * License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
  * Text Domain: spark-cw-fresh
  * Domain Path: /languages
  */

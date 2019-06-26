@@ -4,8 +4,7 @@ Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
 Tested up to: 5.2.2
 Stable tag: 1.0.0
-License: GPLv2 or later
-License URI: http://www.gnu.org/licenses/gpl-2.0.html
+License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
 
