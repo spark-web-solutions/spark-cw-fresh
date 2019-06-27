@@ -71,6 +71,14 @@ class Spark_Cw_Fresh_Public {
     }
 
     /**
+     * Register our custom RSS feed endpoints
+     * @since 1.1.0
+     */
+    public function register_feeds() {
+        add_feed('fresh/mailchimp', array($this, 'mailchimp_rss'));
+    }
+
+    /**
      * Use our templates for FRESH posts unless overridden in the theme
      * @param string $template Path to template file
      * @return string Path to template file
@@ -118,17 +126,10 @@ class Spark_Cw_Fresh_Public {
      * @since 1.0.0
      */
     public function shortcode_fresh_today($shortcode_atts) {
-        $args = array(
-                'posts_per_page' => 1,
-                'post_type' => 'fresh',
-                'orderby' => 'post_date',
-                'order' => 'DESC',
-        );
-        $freshes = get_posts($args);
+        $fresh = $this->get_todays_fresh();
 
         ob_start();
-        foreach ($freshes as $fresh) {
-            $meta = Spark_Cw_Fresh_Meta::get_post_meta($fresh);
+        $meta = Spark_Cw_Fresh_Meta::get_post_meta($fresh);
 ?>
 <article <?php post_class('fresh-wrapper'); ?>>
     <h2><?php echo get_the_title($fresh->ID); ?></h2>
@@ -142,8 +143,74 @@ class Spark_Cw_Fresh_Public {
     <?php echo apply_filters('the_content', $fresh->post_content); ?>
 </article>
 <?php
-        }
         $content = ob_get_clean();
         return $content;
+    }
+
+    /**
+     * Generate MailChimp RSS feed
+     * @since 1.1.0
+     */
+    public function mailchimp_rss() {
+        header('Content-type: application/rss+xml; charset=utf-8');
+        header("Pragma: 0");
+        header("Expires: 0");
+
+        $now = current_time(DATE_RSS, false);
+        $fresh = $this->get_todays_fresh();
+
+        $rss  = '<?xml version="1.0"?>'."\n";
+        $rss .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">'."\n";
+        $rss .= '  <channel>'."\n";
+        $rss .= '    <title>FRESH</title>'."\n";
+        $rss .= '    <link>'.site_url('/fresh/').'</link>'."\n";
+        $rss .= '    <description>Today\'s FRESH</description>'."\n";
+        $rss .= '    <language>'.get_option('spark-cw-fresh-settings-language').'</language>'."\n";
+        $rss .= '    <pubDate>'.$now.'</pubDate>'."\n";
+        $rss .= '    <lastBuildDate>'.$now.'</lastBuildDate>'."\n";
+        $rss .= '    <managingEditor>'.get_option('admin_email').'</managingEditor>'."\n";
+        $rss .= '    <item>'."\n";
+        $rss .= '      <title>'.$fresh->post_title.'</title>'."\n";
+        $rss .= '      <link>'.get_permalink($fresh->ID).'</link>'."\n";
+        $rss .= '      <author>Berni Dymet</author>'."\n";
+        $post_content = apply_filters('the_content', $fresh->post_content);
+        $rss .= '      <description>'."\n";
+        $rss .= '        <![CDATA['.$post_content.']]>'."\n";
+        $rss .= '      </description>'."\n";
+        $rss .= '      <pubDate>'.$now.'</pubDate>'."\n";
+        if (has_post_thumbnail($fresh->ID)) {
+            $featured_image = get_post_thumbnail_id($fresh->ID);
+            $image = wp_get_attachment_image_src($featured_image, 'full');
+            $rss .= '      <media:content url="'.$image[0].'" fileSize="'.filesize(get_attached_file($featured_image)).'" type="'.get_post_mime_type($featured_image).'" medium="image" width="'.$image[1].'" height="'.$image[2].'" />'."\n";
+        }
+        $cats = wp_get_post_terms($fresh->ID, 'fresh_cat', array('fields' => 'names'));
+        foreach ($cats as $cat) {
+            $rss .= '      <category>'.$cat.'</category>'."\n";
+        }
+        $rss .= '    </item>'."\n";
+        $rss .= '  </channel>'."\n";
+        $rss .= '</rss>'."\n";
+
+        echo $rss;
+    }
+
+    /**
+     * Get today's FRESH post
+     * @return WP_Post|boolean Post object or false on failure
+     * @since 1.1.0
+     */
+    private function get_todays_fresh() {
+        $args = array(
+                'posts_per_page' => 1,
+                'post_type' => 'fresh',
+                'orderby' => 'post_date',
+                'order' => 'DESC',
+        );
+        $freshes = get_posts($args);
+        foreach ($freshes as $fresh) {
+            return $fresh;
+        }
+
+        return false;
     }
 }

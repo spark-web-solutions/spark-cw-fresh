@@ -164,6 +164,7 @@ class Spark_Cw_Fresh {
         $plugin_public = new Spark_Cw_Fresh_Public($this->get_plugin_name(), $this->get_version());
 
         add_action('init', array($plugin_public, 'register_shortcodes'));
+        add_action('init', array($plugin_public, 'register_feeds'));
         add_action('wp_enqueue_scripts', array($plugin_public, 'enqueue_styles'));
 //         add_action('wp_enqueue_scripts', array($plugin_public, 'enqueue_scripts'));
         add_action('template_include', array($plugin_public, 'template_include'));
