@@ -100,13 +100,22 @@ class Spark_Cw_Fresh_Cron {
 
         $namespaces = $x->getNamespaces(true);
         foreach ($x->channel->item as $item) {
+            $post_type = 'fresh';
             $post = array(
-                    'post_type' => 'fresh',
+                    'post_type' => $post_type,
                     'post_status' => 'publish',
                     'post_date' => date('Y-m-d', strtotime((string)$item->pubDate)),
                     'post_title' => (string)$item->title,
                     'post_content' => (string)$item->description,
             );
+
+            // Make sure we haven't already added this post
+            $existing_post = get_page_by_title((string)$item->title, OBJECT, $post_type);
+            if ($existing_post instanceof WP_Post && strtotime($existing_post->post_date) == strtotime((string)$item->pubDate)) {
+                return;
+            }
+
+            // Insert new post
             $post_id = wp_insert_post($post, true);
             if (is_int($post_id)) {
                 add_post_meta($post_id, '_lang', $lang);
