@@ -15,7 +15,7 @@
  * Plugin Name: FRESH by christianityworks
  * Plugin URI: https://sparkweb.com.au
  * Description: Embed FRESH on your site.
- * Version: 1.1.0
+ * Version: 1.2.0
  * Author: Spark Web Solutions
  * Author URI: https://sparkweb.com.au
  * License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
@@ -33,7 +33,7 @@ if (!defined('WPINC')) {
  * Start at version 1.0.0 and use SemVer - https://semver.org
  * Rename this for your plugin and update it as you release new versions.
  */
-define('SPARK_CW_FRESH_VERSION', '1.1.0');
+define('SPARK_CW_FRESH_VERSION', '1.2.0');
 define('SPARK_CW_FRESH_PATH', __FILE__);
 
 /**

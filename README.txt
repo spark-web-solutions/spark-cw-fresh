@@ -2,8 +2,8 @@
 Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
-Tested up to: 5.2.2
-Stable tag: 1.1.0
+Tested up to: 5.2.3
+Stable tag: 1.2.0
 License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
@@ -21,3 +21,15 @@ Embed the FRESH daily devotional from christianityworks on your site.
 1. Upload `spark-cw-fresh.zip` via Plugins -> Add New. Alternately extract the zip file and upload the `spark-cw-fresh` folder to the `/wp-content/plugins/` directory via FTP.
 1. Activate the plugin through the 'Plugins' menu in WordPress.
 1. Select your preferred language in FRESH -> Settings.
+
+== Changelog ==
+
+= 1.2.0 =
+* Added full multi-language support
+* Added check to avoid duplicate posts
+
+= 1.1.0 =
+* Added MailChimp RSS feed
+
+= 1.0.0 =
+* Initial release
