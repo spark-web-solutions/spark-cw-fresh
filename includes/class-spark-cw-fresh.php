@@ -46,6 +46,11 @@ class Spark_Cw_Fresh {
      */
     protected $version;
 
+    public static $languages = array(
+            'en-au' => 'English',
+            'vi-vn' => 'Vietnamese',
+    );
+
     /**
      * Define the core functionality of the plugin.
      *
@@ -203,6 +208,22 @@ class Spark_Cw_Fresh {
         );
         new Spark_Cw_Fresh_Cpt('FRESH', 'FRESH', $args, 'fresh');
 
+        $post_types = array('fresh');
+        $translations = array();
+        $selected_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
+        $args['show_in_menu'] = false; // We manually add it as a child of the main FRESH menu item below
+        foreach ($selected_languages as $code) {
+            $name = $this::$languages[$code];
+            $shortcode = substr($code, 0, strpos($code, '-'));
+            $post_type = 'fresh-'.$shortcode;
+            $post_types[] = $post_type;
+            $translations[$shortcode] = $name;
+            $args['rewrite'] = array(
+                    'slug' => 'fresh/'.$shortcode,
+            );
+            new Spark_Cw_Fresh_Cpt('FRESH '.$name, 'FRESH '.$name, $args, $post_type);
+        }
+
         $meta_fields = array(
                 array(
                         'title' => __('Video URL', 'spark-cw-fresh'),
@@ -225,7 +246,7 @@ class Spark_Cw_Fresh {
                         'type' => 'textarea',
                 ),
         );
-        new Spark_Cw_Fresh_Meta(__('Episode Details', 'spark-cw-fresh'), array('fresh'), $meta_fields);
+        new Spark_Cw_Fresh_Meta(__('Episode Details', 'spark-cw-fresh'), $post_types, $meta_fields);
 
         $args = array(
                 'rewrite' => array(
@@ -233,7 +254,21 @@ class Spark_Cw_Fresh {
                         'with_front' => false,
                 ),
         );
-        new Spark_Cw_Fresh_Tax('FRESH Category', 'FRESH Categories', array('fresh'), $args, 'fresh_cat');
+        new Spark_Cw_Fresh_Tax('FRESH Category', 'FRESH Categories', $post_types, $args, 'fresh_cat');
+
+        foreach ($translations as $code => $name) {
+            // Add translation posts page under main Fresh menu item
+            add_action('admin_menu', function() use ($code, $name) {
+                add_submenu_page('edit.php?post_type=fresh', $name, $name, 'edit_posts', 'edit.php?post_type=fresh-'.$code);
+            }, 5);
+            // Highlight correct menu item when editing translated posts
+            add_filter('parent_file', function($parent_file) use ($code) {
+                if ($parent_file == 'edit.php?post_type=fresh-'.$code) {
+                    return 'edit.php?post_type=fresh';
+                }
+                return $parent_file;
+            });
+        }
 
         $ia_ver = get_option('spark-cw-fresh-version-ia', 0);
         if (version_compare($ia_ver, $this->version, '<')) {

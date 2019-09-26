@@ -45,10 +45,7 @@ class Spark_Cw_Fresh_Cron {
      * @access private
      * @var array
      */
-    private $rss_feeds = array(
-            'en-au' => 'https://christianityworks.com/wp-content/plugins/bb-rss-mailchimp/feeds/fresh-unbranded.xml',
-            'vi-vn' => 'https://christianityworks.com/wp-content/plugins/bb-rss-mailchimp/feeds/fresh-unbranded-vietnamese.xml'
-    );
+    private $rss_feeds = array();
 
     /**
      * Initialize the class and set its properties.
@@ -60,6 +57,13 @@ class Spark_Cw_Fresh_Cron {
     public function __construct($plugin_name, $version) {
         $this->plugin_name = $plugin_name;
         $this->version = $version;
+
+        foreach (Spark_Cw_Fresh::$languages as $code => $name) {
+            $base_url = 'https://christianityworks.com/wp-content/plugins/bb-rss-mailchimp/feeds/fresh-unbranded';
+            $feed_lang = $code == 'en-au' ? '' : '-'.strtolower($name);
+            $feed_url = $base_url.$feed_lang.'.xml';
+            $this->rss_feeds[$code] = $feed_url;
+        }
     }
 
     /**
@@ -89,57 +93,68 @@ class Spark_Cw_Fresh_Cron {
      * @since 1.0.0
      */
     public function get_latest_fresh() {
-        $lang = get_option('spark-cw-fresh-settings-language');
-        if (!array_key_exists($lang, $this->rss_feeds)) {
-            $lang = 'en-au';
+        $languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
+        if (!is_array($languages)) {
+            $languages = array();
         }
-        $feed_url = $this->rss_feeds[$lang];
-        if (false === $x = simplexml_load_file($feed_url)) {
-            return;
-        }
+        $english = 'en-au';
+        array_unshift($languages, $english);
 
-        $namespaces = $x->getNamespaces(true);
-        foreach ($x->channel->item as $item) {
-            $post_type = 'fresh';
-            $post = array(
-                    'post_type' => $post_type,
-                    'post_status' => 'publish',
-                    'post_date' => date('Y-m-d', strtotime((string)$item->pubDate)),
-                    'post_title' => (string)$item->title,
-                    'post_content' => (string)$item->description,
-            );
-
-            // Make sure we haven't already added this post
-            $existing_post = get_page_by_title((string)$item->title, OBJECT, $post_type);
-            if ($existing_post instanceof WP_Post && strtotime($existing_post->post_date) == strtotime((string)$item->pubDate)) {
-                return;
+        foreach ($languages as $lang) {
+            if (!array_key_exists($lang, $this->rss_feeds)) {
+                continue;
+            }
+            $feed_url = $this->rss_feeds[$lang];
+            if (false === $x = simplexml_load_file($feed_url)) {
+                continue;
             }
 
-            // Insert new post
-            $post_id = wp_insert_post($post, true);
-            if (is_int($post_id)) {
-                add_post_meta($post_id, '_lang', $lang);
-                add_post_meta($post_id, 'scripture_reference', (string)$item->children($namespaces['fresh'])->scriptureReference);
-                add_post_meta($post_id, 'scripture_quote', (string)$item->children($namespaces['fresh'])->scriptureQuote);
-                $media = $item->children($namespaces['media']);
-                foreach ($media as $media_item) {
-                    $atts = $media_item->attributes();
-                    if ($atts->medium == 'image') { // Featured image
-                        $thumbnail_id = media_sideload_image((string)$atts->url, $post_id, null, 'id');
-                        set_post_thumbnail($post_id, $thumbnail_id);
-                    } elseif ($atts->medium == 'video') { // Video
-                        add_post_meta($post_id, 'video', (string)$atts->url);
-                    } elseif ($atts->medium == 'audio') { // Audio
-                        add_post_meta($post_id, 'audio', (string)$atts->url);
-                    }
+            $namespaces = $x->getNamespaces(true);
+            foreach ($x->channel->item as $item) {
+                $post_type = 'fresh';
+                if ($lang != $english) {
+                    $post_type .= '-'.substr($lang, 0, strpos($lang, '-'));
+                }
+                $post = array(
+                        'post_type' => $post_type,
+                        'post_status' => 'publish',
+                        'post_date' => date('Y-m-d', strtotime((string)$item->pubDate)),
+                        'post_title' => (string)$item->title,
+                        'post_content' => (string)$item->description,
+                );
+
+                // Make sure we haven't already added this post
+                $existing_post = get_page_by_title((string)$item->title, OBJECT, $post_type);
+                if ($existing_post instanceof WP_Post && strtotime($existing_post->post_date) == strtotime((string)$item->pubDate)) {
+                    continue;
                 }
 
-                // Categories
-                $categories = array();
-                foreach ($item->category as $category) {
-                    $categories[] = (string)$category;
+                // Insert new post
+                $post_id = wp_insert_post($post, true);
+                if (is_int($post_id)) {
+                    add_post_meta($post_id, '_lang', $lang);
+                    add_post_meta($post_id, 'scripture_reference', (string)$item->children($namespaces['fresh'])->scriptureReference);
+                    add_post_meta($post_id, 'scripture_quote', (string)$item->children($namespaces['fresh'])->scriptureQuote);
+                    $media = $item->children($namespaces['media']);
+                    foreach ($media as $media_item) {
+                        $atts = $media_item->attributes();
+                        if ($atts->medium == 'image') { // Featured image
+                            $thumbnail_id = media_sideload_image((string)$atts->url, $post_id, null, 'id');
+                            set_post_thumbnail($post_id, $thumbnail_id);
+                        } elseif ($atts->medium == 'video') { // Video
+                            add_post_meta($post_id, 'video', (string)$atts->url);
+                        } elseif ($atts->medium == 'audio') { // Audio
+                            add_post_meta($post_id, 'audio', (string)$atts->url);
+                        }
+                    }
+
+                    // Categories
+                    $categories = array();
+                    foreach ($item->category as $category) {
+                        $categories[] = (string)$category;
+                    }
+                    wp_set_object_terms($post_id, $categories, 'fresh_cat');
                 }
-                wp_set_object_terms($post_id, $categories, 'fresh_cat');
             }
         }
     }

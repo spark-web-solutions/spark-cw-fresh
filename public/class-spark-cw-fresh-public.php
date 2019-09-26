@@ -76,6 +76,11 @@ class Spark_Cw_Fresh_Public {
      */
     public function register_feeds() {
         add_feed('fresh/mailchimp', array($this, 'mailchimp_rss'));
+        $additional_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
+        foreach ($additional_languages as $code) {
+            $shortcode = substr($code, 0, strpos($code, '-'));
+            add_feed('fresh/'.$shortcode.'/mailchimp', array($this, 'mailchimp_rss'));
+        }
     }
 
     /**
@@ -85,10 +90,16 @@ class Spark_Cw_Fresh_Public {
      * @since 1.0.0
      */
     public function template_include($template) {
+        $post_types = array('fresh');
+        $additional_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
+        foreach ($additional_languages as $code) {
+            $shortcode = substr($code, 0, strpos($code, '-'));
+            $post_types[] = 'fresh-'.$shortcode;
+        }
         $template_name = null;
-        if (is_singular('fresh')) {
+        if (is_singular($post_types)) {
             $template_name = 'single-fresh.php';
-        } elseif (is_post_type_archive('fresh')) {
+        } elseif (is_post_type_archive($post_types)) {
             $template_name = 'archive-fresh.php';
         } elseif (is_tax('fresh_cat')) {
             $template_name = 'taxonomy-fresh_cat.php';
@@ -125,8 +136,11 @@ class Spark_Cw_Fresh_Public {
      * @return string
      * @since 1.0.0
      */
-    public function shortcode_fresh_today($shortcode_atts) {
-        $fresh = $this->get_todays_fresh();
+    public function shortcode_fresh_today($atts) {
+        $atts = shortcode_atts(array(
+                'lang' => 'en',
+        ), $atts, 'fresh_today');
+        $fresh = $this->get_todays_fresh($atts['lang']);
 
         ob_start();
         $meta = Spark_Cw_Fresh_Meta::get_post_meta($fresh);
@@ -156,8 +170,15 @@ class Spark_Cw_Fresh_Public {
         header("Pragma: 0");
         header("Expires: 0");
 
+        $lang = 'en';
+        $path = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $parts = explode('/', $path);
+        if (strlen($parts[3]) == 2) {
+            $lang = $parts[3];
+        }
+
         $now = current_time(DATE_RSS, false);
-        $fresh = $this->get_todays_fresh();
+        $fresh = $this->get_todays_fresh($lang);
 
         $rss  = '<?xml version="1.0"?>'."\n";
         $rss .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">'."\n";
@@ -165,7 +186,7 @@ class Spark_Cw_Fresh_Public {
         $rss .= '    <title>FRESH</title>'."\n";
         $rss .= '    <link>'.site_url('/fresh/').'</link>'."\n";
         $rss .= '    <description>Today\'s FRESH</description>'."\n";
-        $rss .= '    <language>'.get_option('spark-cw-fresh-settings-language').'</language>'."\n";
+        $rss .= '    <language>'.get_post_meta($fresh->ID, '_lang', true).'</language>'."\n";
         $rss .= '    <pubDate>'.$now.'</pubDate>'."\n";
         $rss .= '    <lastBuildDate>'.$now.'</lastBuildDate>'."\n";
         $rss .= '    <managingEditor>'.get_option('admin_email').'</managingEditor>'."\n";
@@ -196,13 +217,18 @@ class Spark_Cw_Fresh_Public {
 
     /**
      * Get today's FRESH post
+     * @param string $lang Optional. Language code. Default 'en'.
      * @return WP_Post|boolean Post object or false on failure
      * @since 1.1.0
      */
-    private function get_todays_fresh() {
+    private function get_todays_fresh($lang = 'en') {
+        $post_type = 'fresh';
+        if ($lang != 'en' && post_type_exists($post_type.'-'.$lang)) {
+            $post_type = $post_type.'-'.$lang;
+        }
         $args = array(
                 'posts_per_page' => 1,
-                'post_type' => 'fresh',
+                'post_type' => $post_type,
                 'orderby' => 'post_date',
                 'order' => 'DESC',
         );

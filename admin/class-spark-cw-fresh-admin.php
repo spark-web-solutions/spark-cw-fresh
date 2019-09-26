@@ -81,6 +81,7 @@ class Spark_Cw_Fresh_Admin {
      * @since 1.0.0
      */
     public function menu() {
+        remove_submenu_page('edit.php?post_type=fresh', 'post-new.php?post_type=fresh');
         add_submenu_page('edit.php?post_type=fresh', __('FRESH Settings', 'spark-cw-fresh'), __('Settings', 'spark-cw-fresh'), 'manage_options', 'spark-cw-fresh-settings', array($this, 'settings_page'));
     }
 
@@ -110,6 +111,8 @@ class Spark_Cw_Fresh_Admin {
      * @since 1.0.0
      */
     public function register_settings() {
+        $languages = Spark_Cw_Fresh::$languages;
+        unset($languages['en-au']); // We always want English, so don't include it as an option
         $section_cfg = array(
                 array(
                         'key' => 'spark-cw-fresh-general-settings',
@@ -120,26 +123,23 @@ class Spark_Cw_Fresh_Admin {
                         'fields' => array(
                                 array(
                                         'key' => 'spark-cw-fresh-settings-language',
-                                        'title' => __('Language', 'spark-cw-fresh'),
-                                        'type' => 'select',
+                                        'title' => __('Additional Languages', 'spark-cw-fresh'),
+                                        'type' => 'checkboxes',
                                         'args' => array(),
-                                        'choices' => array(
-                                                'en-au' => 'English',
-                                                'vi-vn' => 'Vietnamese',
-                                        ),
+                                        'choices' => $languages,
                                         'register_settings_args' => array(
                                                 'type' => 'string',
-                                                'sanitize_callback' => 'sanitize_text_field',
-                                                'default' => 'en-au',
+                                                'sanitize_callback' => null,
+                                                'default' => array(),
                                         ),
                                 ),
                         ),
                 ),
         );
 
-        foreach ($section_cfg as $section_key => $section) {
+        foreach ($section_cfg as $section) {
             add_settings_section($section['key'], $section['title'], $section['callback'], $section['page']);
-            foreach ($section['fields'] as $section_field_key => $section_field_value) {
+            foreach ($section['fields'] as $section_field_value) {
                 register_setting($section['wp_option'], $section_field_value['key'], $section_field_value['register_settings_args']);
                 add_settings_field($section_field_value['key'], $section_field_value['title'], array($this, 'render_section_fields'), $section['page'], $section['key'], $section_field_value);
             }
@@ -151,7 +151,10 @@ class Spark_Cw_Fresh_Admin {
      * @since 1.0.0
      */
     function render_section_fields($param) {
-        $value = get_option($param['key']);
+        $value = maybe_unserialize(get_option($param['key']));
+        if (empty($value)) {
+            $value = $param['register_settings_args']['default'];
+        }
 
         $prop = '';
         foreach ($param['args'] as $prop_key => $prop_value) {
@@ -159,6 +162,12 @@ class Spark_Cw_Fresh_Admin {
         }
 
         switch ($param['type']) {
+            case 'checkboxes':
+                foreach ($param['choices'] as $val => $text) {
+                    $selected = is_array($value) ? in_array($val, $value) : $val == $value;
+                    echo "<label><input type='checkbox' name='{$param['key']}[]' id='{$param['key']}' value='$val' ".checked(true, $selected, false)." $prop> $text</label><br>";
+                }
+                break;
             case 'select':
                 echo '<select name="'.$param['key'].'" id="'.$param['key'].'" '.$prop.'>';
                 foreach ($param['choices'] as $val => $text) {
@@ -173,7 +182,7 @@ class Spark_Cw_Fresh_Admin {
                 wp_editor($value, $param['key'], array_merge($param['args'], array('textarea_name' => $param['key'])));
                 break;
             default:
-                echo "<input type='{$param['type']}' name='{$param['key']}' id='{$param['key']}' value='{$value}' {$prop}/>";
+                echo "<input type='{$param['type']}' name='{$param['key']}' id='{$param['key']}' value='{$value}' {$prop}>";
                 break;
         }
     }
