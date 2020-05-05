@@ -1,21 +1,14 @@
 <?php
 
 /**
- * The plugin bootstrap file
- *
- * This file is read by WordPress to generate the plugin information in the plugin
- * admin area. This file also includes all of the dependencies used by the plugin,
- * registers the activation and deactivation functions, and defines a function
- * that starts the plugin.
- *
  * @link https://sparkweb.com.au
  * @since 1.0.0
  * @package Spark_Cw_Fresh
  *
  * Plugin Name: FRESH by christianityworks
- * Plugin URI: https://sparkweb.com.au
+ * Plugin URI: https://christianityworks.com
  * Description: Embed FRESH on your site.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: Spark Web Solutions
  * Author URI: https://sparkweb.com.au
  * License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
@@ -29,11 +22,9 @@ if (!defined('WPINC')) {
 }
 
 /**
- * Currently plugin version.
- * Start at version 1.0.0 and use SemVer - https://semver.org
- * Rename this for your plugin and update it as you release new versions.
+ * Current plugin version.
  */
-define('SPARK_CW_FRESH_VERSION', '1.2.0');
+define('SPARK_CW_FRESH_VERSION', '1.2.1');
 define('SPARK_CW_FRESH_PATH', __FILE__);
 
 /**
@@ -73,6 +64,6 @@ require plugin_dir_path(__FILE__) . 'includes/class-spark-cw-fresh.php';
  * @since 1.0.0
  */
 function run_spark_cw_fresh() {
-    $plugin = new Spark_Cw_Fresh();
+    new Spark_Cw_Fresh();
 }
 run_spark_cw_fresh();

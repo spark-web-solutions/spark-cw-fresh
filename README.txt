@@ -3,7 +3,7 @@ Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
 Tested up to: 5.2.3
-Stable tag: 1.2.0
+Stable tag: 1.2.1
 License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
@@ -12,7 +12,7 @@ Embed FRESH on your site.
 
 Embed the FRESH daily devotional from christianityworks on your site.
 
-*   Checks the CW site daily and pulls down a copy of today's FRESH devotional in the selected language.
+*   Checks the CW site daily and pulls down a copy of today's FRESH devotional in selected languages.
 *   Adds both archive and single views of the FRESH devotionals
 *   Produces an RSS feed you can use e.g. in a MailChimp campaign
 
@@ -23,6 +23,11 @@ Embed the FRESH daily devotional from christianityworks on your site.
 1. Select your preferred language in FRESH -> Settings.
 
 == Changelog ==
+
+= 1.2.1 =
+* Added Afrikaans
+* Single post template will now fall back to featured image if no video is set
+* Code cleanup
 
 = 1.2.0 =
 * Added full multi-language support
