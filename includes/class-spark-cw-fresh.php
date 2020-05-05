@@ -48,7 +48,8 @@ class Spark_Cw_Fresh {
 
     public static $languages = array(
             'en-au' => 'English',
-            'vi-vn' => 'Vietnamese',
+    		'af-za' => 'Afrikaans',
+    		'vi-vn' => 'Vietnamese',
     );
 
     /**
