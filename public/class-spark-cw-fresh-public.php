@@ -77,9 +77,11 @@ class Spark_Cw_Fresh_Public {
     public function register_feeds() {
         add_feed('fresh/mailchimp', array($this, 'mailchimp_rss'));
         $additional_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
-        foreach ($additional_languages as $code) {
-            $shortcode = substr($code, 0, strpos($code, '-'));
-            add_feed('fresh/'.$shortcode.'/mailchimp', array($this, 'mailchimp_rss'));
+        if (is_array($additional_languages)) {
+            foreach ($additional_languages as $code) {
+                $shortcode = substr($code, 0, strpos($code, '-'));
+                add_feed('fresh/'.$shortcode.'/mailchimp', array($this, 'mailchimp_rss'));
+            }
         }
     }
 
@@ -92,9 +94,11 @@ class Spark_Cw_Fresh_Public {
     public function template_include($template) {
         $post_types = array('fresh');
         $additional_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
-        foreach ($additional_languages as $code) {
-            $shortcode = substr($code, 0, strpos($code, '-'));
-            $post_types[] = 'fresh-'.$shortcode;
+        if (is_array($additional_languages)) {
+            foreach ($additional_languages as $code) {
+                $shortcode = substr($code, 0, strpos($code, '-'));
+                $post_types[] = 'fresh-'.$shortcode;
+            }
         }
         $template_name = null;
         if (is_singular($post_types)) {

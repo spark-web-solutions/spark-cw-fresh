@@ -93,7 +93,7 @@ class Spark_Cw_Fresh_Cron {
      * @since 1.0.0
      */
     public function get_latest_fresh() {
-        $languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
+        $languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language', array()));
         if (!is_array($languages)) {
             $languages = array();
         }

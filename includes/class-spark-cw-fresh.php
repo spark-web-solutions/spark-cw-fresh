@@ -211,17 +211,19 @@ class Spark_Cw_Fresh {
         $post_types = array('fresh');
         $translations = array();
         $selected_languages = maybe_unserialize(get_option('spark-cw-fresh-settings-language'));
-        $args['show_in_menu'] = false; // We manually add it as a child of the main FRESH menu item below
-        foreach ($selected_languages as $code) {
-            $name = $this::$languages[$code];
-            $shortcode = substr($code, 0, strpos($code, '-'));
-            $post_type = 'fresh-'.$shortcode;
-            $post_types[] = $post_type;
-            $translations[$shortcode] = $name;
-            $args['rewrite'] = array(
-                    'slug' => 'fresh/'.$shortcode,
-            );
-            new Spark_Cw_Fresh_Cpt('FRESH '.$name, 'FRESH '.$name, $args, $post_type);
+        if (is_array($selected_languages)) {
+            $args['show_in_menu'] = false; // We manually add it as a child of the main FRESH menu item below
+            foreach ($selected_languages as $code) {
+                $name = $this::$languages[$code];
+                $shortcode = substr($code, 0, strpos($code, '-'));
+                $post_type = 'fresh-'.$shortcode;
+                $post_types[] = $post_type;
+                $translations[$shortcode] = $name;
+                $args['rewrite'] = array(
+                        'slug' => 'fresh/'.$shortcode,
+                );
+                new Spark_Cw_Fresh_Cpt('FRESH '.$name, 'FRESH '.$name, $args, $post_type);
+            }
         }
 
         $meta_fields = array(
