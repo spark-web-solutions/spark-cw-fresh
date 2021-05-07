@@ -30,11 +30,15 @@ if (!empty($meta['video'])) {
 	<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id(), 'large'); ?>" alt="">
 <?php
 }
+if (!empty($meta['audio'])) {
 ?>
 	<div class="audio">
 		<audio src="<?php echo $meta['audio']; ?>" controls="controls"></audio>
 	</div>
-	<?php the_content(); ?>
+<?php
+}
+the_content();
+?>
 </article>
 <?php
 get_footer();

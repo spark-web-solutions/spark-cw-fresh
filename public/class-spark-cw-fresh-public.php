@@ -152,13 +152,26 @@ class Spark_Cw_Fresh_Public {
 <article <?php post_class('fresh-wrapper'); ?>>
     <h2><?php echo get_the_title($fresh->ID); ?></h2>
     <p class="scripture"><span class="reference"><?php echo $meta['scripture_reference']; ?></span> <?php echo $meta['scripture_quote']; ?></p>
-    <div class="video">
-        <iframe src="<?php echo $meta['video']; ?>" allowfullscreen="" width="100%" height="auto" frameborder="0"></iframe>
-    </div>
-    <div class="audio">
-        <audio src="<?php echo $meta['audio']; ?>" controls="controls"></audio>
-    </div>
-    <?php echo apply_filters('the_content', $fresh->post_content); ?>
+<?php
+if (!empty($meta['video'])) {
+?>
+	<div class="video">
+		<iframe src="<?php echo $meta['video']; ?>" allowfullscreen="" width="100%" height="auto" frameborder="0"></iframe>
+	</div>
+<?php
+} elseif (has_post_thumbnail($fresh)) {
+?>
+	<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), 'large'); ?>" alt="">
+<?php
+}
+if (!empty($meta['audio'])) {
+?>
+	<div class="audio">
+		<audio src="<?php echo $meta['audio']; ?>" controls="controls"></audio>
+	</div>
+<?php
+}
+echo apply_filters('the_content', $fresh->post_content); ?>
 </article>
 <?php
         $content = ob_get_clean();
