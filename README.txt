@@ -24,6 +24,9 @@ Embed the FRESH daily devotional from christianityworks on your site.
 
 == Changelog ==
 
+= 1.2.2 =
+* Bug fixes
+
 = 1.2.1 =
 * Added Afrikaans
 * Single post template will now fall back to featured image if no video is set
