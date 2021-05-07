@@ -115,12 +115,17 @@ class Spark_Cw_Fresh_Cron {
                 if ($lang != $english) {
                     $post_type .= '-'.substr($lang, 0, strpos($lang, '-'));
                 }
+                $post_content = (string)$item->description;
+                $contents = $item->children($namespaces['content']);
+                if (!empty($contents->encoded)) {
+                	$post_content = (string)$contents->encoded;
+                }
                 $post = array(
                         'post_type' => $post_type,
                         'post_status' => 'publish',
                         'post_date' => date('Y-m-d', strtotime((string)$item->pubDate)),
                         'post_title' => (string)$item->title,
-                        'post_content' => (string)$item->description,
+                		'post_content' => $post_content,
                 );
 
                 // Make sure we haven't already added this post
