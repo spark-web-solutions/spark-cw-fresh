@@ -22,34 +22,43 @@
  * Also maintains the unique identifier of this plugin as well as the current
  * version of the plugin.
  *
- * @since 1.0.0
- * @package Spark_Cw_Fresh
+ * @since      1.0.0
+ * @package    Spark_Cw_Fresh
  * @subpackage Spark_Cw_Fresh/includes
- * @author Spark Web Solutions <plugins@sparkweb.com.au>
+ * @author     Spark Web Solutions <plugins@sparkweb.com.au>
  */
 class Spark_Cw_Fresh {
     /**
      * The unique identifier of this plugin.
      *
-     * @since 1.0.0
+     * @since  1.0.0
      * @access protected
-     * @var string $plugin_name The string used to uniquely identify this plugin.
+     * @var    string $plugin_name The string used to uniquely identify this plugin.
      */
     protected $plugin_name;
 
     /**
      * The current version of the plugin.
      *
-     * @since 1.0.0
+     * @since  1.0.0
      * @access protected
-     * @var string $version The current version of the plugin.
+     * @var    string $version The current version of the plugin.
      */
     protected $version;
 
+    /**
+     * List of supported languages
+     *
+     * @since  1.2.0
+     * @access public
+     * @var    array $languages The list of languages - key is ISO language code and value is language name
+     */
     public static $languages = array(
             'en-au' => 'English',
     		'af-za' => 'Afrikaans',
+    		'hi-in' => 'Hindi',
     		'vi-vn' => 'Vietnamese',
+    		'zu-za' => 'Zulu',
     );
 
     /**
