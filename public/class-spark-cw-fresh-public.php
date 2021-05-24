@@ -161,7 +161,9 @@ if (!empty($meta['video'])) {
 <?php
 } elseif (has_post_thumbnail($fresh)) {
 ?>
-	<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), 'large'); ?>" alt="">
+	<div class="image">
+		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), 'large'); ?>" alt="">
+	</div>
 <?php
 }
 if (!empty($meta['audio'])) {

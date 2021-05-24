@@ -3,10 +3,10 @@
  * Custom template for displaying a single FRESH post.
  * Override this by copying it to your theme and making the desired changes.
  *
- * @link	   https://sparkweb.com.au
- * @since	  1.0.0
+ * @link       https://sparkweb.com.au
+ * @since      1.0.0
  *
- * @package	Spark_Cw_Fresh
+ * @package    Spark_Cw_Fresh
  * @subpackage Spark_Cw_Fresh/public/templates
  */
 
@@ -27,7 +27,9 @@ if (!empty($meta['video'])) {
 <?php
 } elseif (has_post_thumbnail($post)) {
 ?>
-	<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id(), 'large'); ?>" alt="">
+	<div class="image">
+		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id(), 'large'); ?>" alt="">
+	</div>
 <?php
 }
 if (!empty($meta['audio'])) {
