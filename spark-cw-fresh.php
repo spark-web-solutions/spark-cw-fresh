@@ -1,17 +1,16 @@
 <?php
-
 /**
- * @link https://sparkweb.com.au
- * @since 1.0.0
- * @package Spark_Cw_Fresh
+ * @link        https://sparkweb.com.au
+ * @since       1.0.0
+ * @package     Spark_Cw_Fresh
  *
  * Plugin Name: FRESH by christianityworks
- * Plugin URI: https://christianityworks.com
+ * Plugin URI:  https://christianityworks.com
  * Description: Embed FRESH on your site.
- * Version: 1.2.2
- * Author: Spark Web Solutions
- * Author URI: https://sparkweb.com.au
- * License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
+ * Version:     1.2.3
+ * Author:      Spark Web Solutions
+ * Author URI:  https://sparkweb.com.au
+ * License:     Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
  * Text Domain: spark-cw-fresh
  * Domain Path: /languages
  */
@@ -24,7 +23,7 @@ if (!defined('WPINC')) {
 /**
  * Current plugin version.
  */
-define('SPARK_CW_FRESH_VERSION', '1.2.2');
+define('SPARK_CW_FRESH_VERSION', '1.2.3');
 define('SPARK_CW_FRESH_PATH', __FILE__);
 
 /**

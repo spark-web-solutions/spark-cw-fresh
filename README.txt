@@ -24,6 +24,10 @@ Embed the FRESH daily devotional from christianityworks on your site.
 
 == Changelog ==
 
+= 1.2.3 =
+* Centre image in single episode in case it isn't large enough to fill the available space
+* Added support for Hindi and Zulu
+
 = 1.2.2 =
 * Bug fixes
 
