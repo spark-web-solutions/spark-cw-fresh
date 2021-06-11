@@ -73,8 +73,10 @@ class Spark_Cw_Fresh_Cron {
 	 */
 	public static function register_cron() {
 		if (!wp_next_scheduled('spark_cw_fresh_get_latest_fresh')) {
-			// CW RSS is generated around 4am Sydney time, so we'll check a couple of hours later at 8pm GMT (6am Sydney time)
-			wp_schedule_event(strtotime('8pm'), 'daily', 'spark_cw_fresh_get_latest_fresh');
+			// Grab the latest Fresh at 6am local time each day
+			$date = new DateTime('6am', wp_timezone());
+			$date->setTimezone(new DateTimeZone('UTC'));
+			wp_schedule_event($date->getTimestamp(), 'daily', 'spark_cw_fresh_get_latest_fresh');
 		}
 	}
 

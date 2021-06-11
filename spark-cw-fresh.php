@@ -10,6 +10,8 @@
  * Version:     1.2.3
  * Author:      Spark Web Solutions
  * Author URI:  https://sparkweb.com.au
+ * Requires at least: 5.3.0
+ * Requires PHP: 7.0
  * License:     Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
  * Text Domain: spark-cw-fresh
  * Domain Path: /languages
