@@ -151,7 +151,7 @@ class Spark_Cw_Fresh_Cron {
 							require_once(ABSPATH.'wp-admin/includes/image.php');
 
 							$thumbnail_id = media_sideload_image((string)$atts->url, $post_id, null, 'id');
-							set_post_thumbnail($post_id, $thumbnail_id);
+							add_post_meta($post_id, '_thumbnail_id', $thumbnail_id); // For some reason this works more reliably than set_post_thumbnail
 						} elseif ($atts->medium == 'video') { // Video
 							add_post_meta($post_id, 'video', (string)$atts->url);
 						} elseif ($atts->medium == 'audio') { // Audio
