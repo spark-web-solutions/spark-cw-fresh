@@ -3,7 +3,7 @@ Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
 Tested up to: 5.2.3
-Stable tag: 1.3.0
+Stable tag: 1.3.1
 License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
@@ -23,6 +23,9 @@ Embed the FRESH daily devotional from christianityworks on your site.
 1. Select your preferred language in FRESH -> Settings.
 
 == Changelog ==
+
+= 1.3.1 =
+* If today's episode can't be retrieved from Christianityworks for any reason, the plugin will now automatically try again an hour later
 
 = 1.3.0 =
 * Added ability to set up custom banners for inclusion in RSS feeds for selected languages
