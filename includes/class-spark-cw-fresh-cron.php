@@ -107,7 +107,7 @@ class Spark_Cw_Fresh_Cron {
 				continue;
 			}
 			$feed_url = $this->rss_feeds[$lang];
-			if (true || false === $x = simplexml_load_file($feed_url)) {
+			if (false === $x = simplexml_load_file($feed_url)) {
 				// Failed to retrieve feed - could be a connection issue or a problem with the feed itself
 				// Try again in an hour
 				wp_schedule_single_event(current_time('timestamp', true)+HOUR_IN_SECONDS, 'spark_cw_fresh_get_latest_fresh');
