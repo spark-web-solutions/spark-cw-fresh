@@ -117,6 +117,18 @@ class Spark_Cw_Fresh_Public {
 	}
 
 	/**
+	 * Check whether we need to flush rewrite rules (e.g. following plugin activation)
+	 *
+	 * @since 1.3.3
+	 */
+	public function maybe_flush_rewrite_rules() {
+		if (get_option('spark_cw_fresh_flush_rewrite_rules') == true) {
+			flush_rewrite_rules();
+			delete_option('spark_cw_fresh_flush_rewrite_rules');
+		}
+	}
+
+	/**
 	 * Register the stylesheets for the public-facing side of the site.
 	 *
 	 * @since 1.0.0

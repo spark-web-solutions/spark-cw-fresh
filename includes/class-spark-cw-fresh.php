@@ -180,6 +180,7 @@ class Spark_Cw_Fresh {
 
 		add_action('init', array($plugin_public, 'register_shortcodes'));
 		add_action('init', array($plugin_public, 'register_feeds'));
+		add_action('init', array($plugin_public, 'maybe_flush_rewrite_rules'), 20);
 		add_action('wp_enqueue_scripts', array($plugin_public, 'enqueue_styles'));
 //		 add_action('wp_enqueue_scripts', array($plugin_public, 'enqueue_scripts'));
 		add_action('template_include', array($plugin_public, 'template_include'));
