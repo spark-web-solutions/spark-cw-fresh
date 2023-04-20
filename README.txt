@@ -2,19 +2,19 @@
 Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
-Tested up to: 5.2.3
-Stable tag: 1.3.2
-License: Copyright Spark Web Solutions and christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
+Tested up to: 6.2
+Stable tag: 1.3.3
+License: Copyright Spark Web Solutions and Christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
 
 == Description ==
 
-Embed the FRESH daily devotional from christianityworks on your site.
+Embed the FRESH daily devotional from Christianityworks on your site.
 
-*   Checks the CW site daily and pulls down a copy of today's FRESH devotional in selected languages
-*   Adds both archive and single views of the FRESH devotionals
-*   Produces an RSS feed you can use e.g. in a MailChimp campaign
+* Checks the Christianityworks site daily and pulls down a copy of today's FRESH devotional in selected languages
+* Adds both archive and single views of the FRESH devotionals
+* Produces an RSS feed you can use e.g. in a MailChimp campaign
 
 == Installation ==
 
@@ -23,6 +23,9 @@ Embed the FRESH daily devotional from christianityworks on your site.
 1. Select your preferred language in FRESH -> Settings.
 
 == Changelog ==
+
+= 1.3.3 =
+* Reworked activation/deactivation logic for more reliable setup of rewrite rules, especially on multisite
 
 = 1.3.2 =
 * Make sure extra cron is only added when retrieval of feed does actually fail
