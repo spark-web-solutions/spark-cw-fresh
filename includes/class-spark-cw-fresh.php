@@ -56,7 +56,9 @@ class Spark_Cw_Fresh {
 	public static $languages = array(
 			'en-au' => 'English',
 			'af-za' => 'Afrikaans',
+			'zh-hans' => 'Chinese (Simplified)',
 			'hi-in' => 'Hindi',
+			'sw-ke' => 'Swahili',
 			'vi-vn' => 'Vietnamese',
 			'zu-za' => 'Zulu',
 	);
