@@ -2,8 +2,8 @@
 Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
 Requires at least: 3.0.1
-Tested up to: 6.2
-Stable tag: 1.3.3
+Tested up to: 6.6
+Stable tag: 1.3.4
 License: Copyright Spark Web Solutions and Christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
@@ -24,11 +24,16 @@ Embed the FRESH daily devotional from Christianityworks on your site.
 
 == Changelog ==
 
+= 1.3.4 =
+* Added Chinese (Simplified) and Swahili
+* Fixed fatal error on PHP 8 when creating/editing banners
+* Cleaned up various PHP warnings
+
 = 1.3.3 =
 * Reworked activation/deactivation logic for more reliable setup of rewrite rules, especially on multisite
 
 = 1.3.2 =
-* Make sure extra cron is only added when retrieval of feed does actually fail
+* Made sure extra cron is only added when retrieval of feed does actually fail
 
 = 1.3.1 =
 * If today's episode can't be retrieved from Christianityworks for any reason, the plugin will now automatically try again an hour later
@@ -37,8 +42,8 @@ Embed the FRESH daily devotional from Christianityworks on your site.
 * Added ability to set up custom banners for inclusion in RSS feeds for selected languages
 
 = 1.2.3 =
-* Centre image in single episode in case it isn't large enough to fill the available space
-* Added support for Hindi and Zulu
+* Centred image in single episode in case it isn't large enough to fill the available space
+* Added Hindi and Zulu
 
 = 1.2.2 =
 * Bug fixes
