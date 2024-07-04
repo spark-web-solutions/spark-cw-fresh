@@ -145,6 +145,9 @@ class Spark_Cw_Fresh_Meta {
 				} else {
 					$selected = get_post_meta($_GET['post'], $field_name);
 				}
+				if (empty($selected)) {
+					$selected = array();
+				}
 				echo '<div style="max-height: 12rem; overflow-y: scroll;">'."\n";
 				foreach ($options as $option) {
 					echo '   <label><input type="checkbox" name="'.$field_name.'[]" value="'.$option['value'].'" '.checked(true, in_array($option['value'], $selected), false).' style="margin: 0 5px 0px 0;"/>'.$option['label'].'</label><br>'."\n";
