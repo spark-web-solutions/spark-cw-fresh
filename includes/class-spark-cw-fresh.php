@@ -323,13 +323,15 @@ class Spark_Cw_Fresh {
 						'value' => 'en',
 				),
 		);
-		foreach ($selected_languages as $code) {
-			$name = $this::$languages[$code];
-			$shortcode = substr($code, 0, strpos($code, '-'));
-			$language_choices[] = array(
-					'label' => $name,
-					'value' => $shortcode,
-			);
+		if (is_array($selected_languages)) {
+			foreach ($selected_languages as $code) {
+				$name = $this::$languages[$code];
+				$shortcode = substr($code, 0, strpos($code, '-'));
+				$language_choices[] = array(
+						'label' => $name,
+						'value' => $shortcode,
+				);
+			}
 		}
 		$meta_fields = array(
 				array(

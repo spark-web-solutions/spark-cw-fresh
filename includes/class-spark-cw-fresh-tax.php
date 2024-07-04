@@ -22,7 +22,13 @@
  * @author Spark Web Solutions <plugins@sparkweb.com.au>
  */
 class Spark_Cw_Fresh_Tax {
-    function __construct($singular, $plural, array $posttypes, array $args = array(), $slug = '') {
+	private $plural;
+	private $singular;
+	private $taxonomy;
+	private $args;
+	private $posttypes;
+
+    public function __construct($singular, $plural, array $posttypes, array $args = array(), $slug = '') {
         $this->plural = $plural;
         $this->singular = $singular;
         $this->taxonomy = !empty($slug) ? $slug : str_replace(' ', '', strtolower($singular));
@@ -70,7 +76,7 @@ class Spark_Cw_Fresh_Tax {
         }
     }
 
-    function register() {
+    public function register() {
         $labels = array(
                 'name' => __(ucfirst($this->singular), 'spark-cw-fresh') ,
                 'singular_name' => __(ucfirst($this->singular), 'spark-cw-fresh'),
@@ -108,7 +114,7 @@ class Spark_Cw_Fresh_Tax {
      * clicking on the menu item in the admin, WordPress' menu system thinks you're viewing something under 'Posts'
      * instead of 'Users'. We really need WP core support for this.
      */
-    function add_user_tax_admin_page() {
+    public function add_user_tax_admin_page() {
         $tax = get_taxonomy(strtolower($this->taxonomy));
         add_users_page(esc_attr($tax->labels->menu_name), esc_attr($tax->labels->menu_name), $tax->cap->manage_terms, 'edit-tags.php?taxonomy='.$tax->name);
     }
@@ -119,7 +125,7 @@ class Spark_Cw_Fresh_Tax {
      *
      * @param object $user The user object currently being edited.
      */
-    function user_profile_tax_section($user) {
+    public function user_profile_tax_section($user) {
         $tax = get_taxonomy(strtolower($this->taxonomy));
         /* Make sure the user can assign terms of the taxonomy before proceeding. */
         if (!current_user_can($tax->cap->assign_terms)) {
@@ -155,7 +161,7 @@ class Spark_Cw_Fresh_Tax {
      *
      * @param int $user_id The ID of the user to save the terms for.
      */
-    function save_user_tax_terms($user_id) {
+    public function save_user_tax_terms($user_id) {
         $tax = get_taxonomy(strtolower($this->taxonomy));
         /* Make sure the current user can edit the user and assign terms before proceeding. */
         if (!current_user_can('edit_user', $user_id) && current_user_can($tax->cap->assign_terms)) {

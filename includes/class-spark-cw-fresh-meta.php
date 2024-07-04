@@ -22,6 +22,13 @@
  * @author Spark Web Solutions <plugins@sparkweb.com.au>
  */
 class Spark_Cw_Fresh_Meta {
+	private $label;
+	private $slug;
+	private $posttypes;
+	private $fields;
+	private $position;
+	private $priority;
+
 	public function __construct($label, array $posttypes, array $fields, $position = 'side', $priority = 'high') {
 		$this->label = $label;
 		$this->slug = str_replace(' ','',strtolower($label));
@@ -48,6 +55,9 @@ class Spark_Cw_Fresh_Meta {
 
 	public function metabox_save($post_id) {
 		if (defined('DOING_AUTOSAVE') && DOING_AUTOSAVE) {
+			return;
+		}
+		if (empty($_POST)) {
 			return;
 		}
 		if (!in_array($_POST['post_type'], $this->posttypes)) {
@@ -90,17 +100,18 @@ class Spark_Cw_Fresh_Meta {
 	}
 
 	private function new_field($args) {
-		is_array($args) ? extract($args) : parse_str($args);
+		$description = $default = $placeholder = $value = '';
+		is_array($args) ? extract($args) : parse_str($args, $args);
 
-		//set defaults
-		if (!$title && !$field_name) {
+		// Set defaults
+		if (empty($title) && empty($field_name)) {
 			return;
 		}
-		if (!$title && $field_name) {
+		if (empty($title) && $field_name) {
 			$title = $field_name;
 		}
 		$title = ucfirst(strtolower($title));
-		if (!$field_name && $title) {
+		if (empty($field_name) && $title) {
 			$field_name = $title;
 		}
 		$field_name = strtolower(str_replace(' ', '_', $field_name));
@@ -110,7 +121,7 @@ class Spark_Cw_Fresh_Meta {
 		if (empty($max_width)) {
 			$max_width = '100%';
 		}
-		if (!$type) {
+		if (empty($type)) {
 			$type = 'text';
 		}
 
@@ -123,7 +134,7 @@ class Spark_Cw_Fresh_Meta {
 		echo ' <div style="display:block;width:100%;padding-bottom:1rem;">' . "\n";
 		switch ($type) {
 			case 'checkbox':
-				$checked = ($source == 'meta' && get_post_meta($_GET['post'], $field_name, true) == 'true') ? 'checked="checked"' : '';
+				$checked = ($source == 'meta' && !empty($_GET['post']) && get_post_meta($_GET['post'], $field_name, true) == 'true') ? 'checked="checked"' : '';
 				if ($source == 'option') {
 					$option = get_option($group);
 					$value = $option[$name];
@@ -142,7 +153,7 @@ class Spark_Cw_Fresh_Meta {
 				if ($source == 'option') {
 					$option = get_option($group);
 					$selected = $option[$name];
-				} else {
+				} elseif (!empty($_GET['post'])) {
 					$selected = get_post_meta($_GET['post'], $field_name);
 				}
 				if (empty($selected)) {
@@ -165,10 +176,10 @@ class Spark_Cw_Fresh_Meta {
 				if ($source == 'option') {
 					$option = get_option($group);
 					$value = $option[$name];
-				} else {
+				} elseif (!empty($_GET['post'])) {
 					$value = get_post_meta($_GET['post'], $field_name, true);
 				}
-				if ($default && !$value) {
+				if ($default && empty($value)) {
 					$value = $default;
 				}
 				echo '<div style="max-height: 12rem; overflow-y: scroll;">'."\n";
@@ -179,17 +190,20 @@ class Spark_Cw_Fresh_Meta {
 				break;
 
 			case 'textarea':
-				if ($source == 'meta')
+				if ($source == 'meta' && !empty($_GET['post'])) {
 					$value = get_post_meta($_GET['post'], $field_name, true);
+				}
 				if ($source == 'option') {
 					$option = get_option($group);
 					$value = $option[$name];
 				}
-				if ($default && !$value)
+				if ($default && empty($value)) {
 					$value = $default;
+				}
 				echo '	<label for="' . $field_name . '">' . $title . '</label>' . "\n";
-				if (!is_array($size))
+				if (!is_array($size)) {
 					$size = explode(',', $size);
+				}
 				$style = 'width:' . $size[0] . ';height:' . $size[1] . ';max-width:' . $max_width . ';';
 				echo '   <textarea id="' . $field_name . '" name="' . $field_name . '" style="' . $style . ';" placeholder="' . $placeholder . '" >' . esc_attr($value) . '</textarea>' . "\n";
 				break;
@@ -200,7 +214,7 @@ class Spark_Cw_Fresh_Meta {
 				//	  array ( 'label' => 'aaa', 'value' => '1' ),
 				//	  array ( 'label' => 'aaa', 'value' => '1' ),
 				//	  );
-				$current = get_post_meta($_GET['post'], $field_name, true);
+				$current = !empty($_GET['post']) ? get_post_meta($_GET['post'], $field_name, true) : '';
 				echo '	<label for="' . $field_name . '">' . $title . '</label>' . "\n";
 				echo '  	<select name="' . $field_name . '" id="' . $field_name . '">' . "\n";
 				$is_group = false;
@@ -233,22 +247,25 @@ class Spark_Cw_Fresh_Meta {
 					$option = get_option($group);
 					$value = $option[$name];
 				}
-				if ($default && !$value)
+				if ($default && empty($value)) {
 					$value = $default;
+				}
 				echo '	<label for="' . $field_name . '">' . $title . '</label>' . "\n";
 				wp_editor($value, $field_name, $settings);
 				break;
 
 			case 'text':
 			default:
-				if ($source == 'meta')
+				if ($source == 'meta' && !empty($_GET['post'])) {
 					$value = get_post_meta($_GET['post'], $field_name, true);
+				}
 				if ($source == 'option') {
 					$option = get_option($group);
 					$value = $option[$name];
 				}
-				if ($default && !$value)
+				if ($default && empty($value)) {
 					$value = $default;
+				}
 				echo '	<label for="' . $field_name . '">' . $title . '</label>' . "\n";
 				echo '   <input type="' . $type . '" id="' . $field_name . '" name="' . $field_name . '" style="display:block;max-width:' . $max_width . ';width:' . $size . ';" placeholder="' . $placeholder . '" value="' . esc_attr($value) . '" />' . "\n";
 				break;

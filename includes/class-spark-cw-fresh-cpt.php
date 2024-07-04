@@ -22,6 +22,11 @@
  * @author Spark Web Solutions <plugins@sparkweb.com.au>
  */
 class Spark_Cw_Fresh_Cpt {
+	private $plural;
+	private $singular;
+	private $slug;
+	private $args;
+
 	public function __construct($singular, $plural, array $args = array(), $slug = '') {
 		$this->plural = $plural;
 		$this->singular = $singular;
