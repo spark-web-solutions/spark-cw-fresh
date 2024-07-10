@@ -1,9 +1,9 @@
 === Plugin Name ===
 Contributors: markparnell
 Tags: christianityworks, fresh, daily devotional
-Requires at least: 3.0.1
+Requires at least: 5.3.0
 Tested up to: 6.6
-Stable tag: 1.3.4
+Stable tag: 1.4.0
 License: Copyright Spark Web Solutions and Christianityworks. Unauthorised distribution of this software, with or without modifications is expressly prohibited.
 
 Embed FRESH on your site.
@@ -23,6 +23,11 @@ Embed the FRESH daily devotional from Christianityworks on your site.
 1. Select your preferred language in FRESH -> Settings.
 
 == Changelog ==
+
+= 1.4.0 =
+* Added additional options to banners. Banners can now be set to show on the web as well as (or instead of) in the RSS feed. They can also now be set to display only on specific days of the week, rather than all days within the selected range. Existing banners will be shown on all days in the RSS feed as per previous versions.
+* Added 'display' and 'image_size' parameters to [fresh_today] shortcode to allow for more control over output
+* Added custom action links in plugins list to plugin settings and documentation
 
 = 1.3.4 =
 * Added Chinese (Simplified) and Swahili
