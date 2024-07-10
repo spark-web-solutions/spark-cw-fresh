@@ -148,46 +148,93 @@ class Spark_Cw_Fresh_Public {
 
 	/**
 	 * Generate output of today's FRESH post
-	 * @param array $shortcode_atts
+	 * @param array $shortcode_atts {
+	 *     Optional. An array of arguments.
+	 *     @type string $lang       Which language to use. Accepts any valid 2-character language code. Default 'en'.
+	 *     @type string $display    What to display. Accepts 'full', 'preview', 'title', 'image'. Default 'full'.
+	 *     @type string $image_size Which version of image to use. Only used when display is 'full' and no video is available, or when display is 'preview' or 'image'. Accepts any registered image size. Default 'full'.
+	 * }
 	 * @return string
 	 * @since 1.0.0
+	 * @since 1.4.0 Added support for display and image_size parameters
 	 */
-	public function shortcode_fresh_today($atts) {
+	public function shortcode_fresh_today(array $atts = array()) {
 		$atts = shortcode_atts(array(
 				'lang' => 'en',
+				'display' => 'full',
+				'image_size' => 'full'
 		), $atts, 'fresh_today');
 		$fresh = $this->get_todays_fresh($atts['lang']);
 
 		ob_start();
 		$meta = Spark_Cw_Fresh_Meta::get_post_meta($fresh);
+		switch ($atts['display']) {
+			case 'preview':
+?>
+<div class="fresh-wrapper">
+<?php
+				if (has_post_thumbnail($fresh)) {
+?>
+	<div class="image">
+		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), $atts['image_size']); ?>" alt="">
+	</div>
+<?php
+				}
+?>
+	<span class="devotional-title"><?php echo get_the_title($fresh->ID); ?></span>
+</div>
+<?php
+				break;
+			case 'title':
+?>
+<div class="fresh-wrapper">
+	<span class="devotional-title"><?php echo get_the_title($fresh->ID); ?></span>
+</div>
+<?php
+				break;
+			case 'image':
+				if (has_post_thumbnail($fresh)) {
+?>
+<div class="fresh-wrapper">
+	<div class="image">
+		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), $atts['image_size']); ?>" alt="">
+	</div>
+</div>
+<?php
+				}
+				break;
+			case 'full':
+			default:
 ?>
 <article <?php post_class('fresh-wrapper'); ?>>
-	<h2><?php echo get_the_title($fresh->ID); ?></h2>
+	<h2 class="devotional-title"><?php echo get_the_title($fresh->ID); ?></h2>
 	<p class="scripture"><span class="reference"><?php echo $meta['scripture_reference']; ?></span> <?php echo $meta['scripture_quote']; ?></p>
 <?php
-if (!empty($meta['video'])) {
+				if (!empty($meta['video'])) {
 ?>
 	<div class="video">
 		<iframe src="<?php echo $meta['video']; ?>" allowfullscreen="" width="100%" height="auto" frameborder="0"></iframe>
 	</div>
 <?php
-} elseif (has_post_thumbnail($fresh)) {
+				} elseif (has_post_thumbnail($fresh)) {
 ?>
 	<div class="image">
-		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), 'large'); ?>" alt="">
+		<img src="<?php echo wp_get_attachment_image_url(get_post_thumbnail_id($fresh), $atts['image_size']); ?>" alt="">
 	</div>
 <?php
-}
-if (!empty($meta['audio'])) {
+				}
+				if (!empty($meta['audio'])) {
 ?>
 	<div class="audio">
 		<audio src="<?php echo $meta['audio']; ?>" controls="controls"></audio>
 	</div>
 <?php
-}
-echo apply_filters('the_content', $fresh->post_content); ?>
+				}
+				echo apply_filters('the_content', $fresh->post_content); ?>
 </article>
 <?php
+				break;
+		}
 		$content = ob_get_clean();
 		return $content;
 	}
