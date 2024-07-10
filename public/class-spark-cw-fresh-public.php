@@ -226,7 +226,7 @@ echo apply_filters('the_content', $fresh->post_content); ?>
 		$rss .= '	  <link>'.get_permalink($fresh->ID).'</link>'."\n";
 		$rss .= '	  <author>Berni Dymet</author>'."\n";
 		$post_content = apply_filters('the_content', $fresh->post_content);
-		$post_content .= $this->get_banner_content($lang);
+		$post_content .= $this->get_banner_content($lang, 'rss');
 		$rss .= '	  <description>'."\n";
 		$rss .= '		<![CDATA['.$post_content.']]>'."\n";
 		$rss .= '	  </description>'."\n";
@@ -249,16 +249,17 @@ echo apply_filters('the_content', $fresh->post_content); ?>
 
 	/**
 	 * Generate HTML for banners
-	 * @param string $lang
+	 * @param string $lang Shortcode for language. Default 'en'
+	 * @param string $context Accepts 'rss' or 'web'. Default 'rss'.
 	 * @return string
 	 * @since 1.3.0
 	 */
-	private function get_banner_content($lang = 'en') {
+	public function get_banner_content($lang = 'en', $context = 'rss') {
 		$html = '';
-		$banners = $this->get_todays_banners($lang);
+		$banners = $this->get_todays_banners($lang, $context);
 		foreach ($banners as $banner) {
 			if (has_post_thumbnail($banner->ID)) {
-				$html .= '<p>';
+				$html .= '<p class="fresh-banner">';
 				$url = get_post_meta($banner->ID, 'url', true);
 				if (!empty($url)) {
 					$html .= '<a href="'.$url.'">';
@@ -277,31 +278,41 @@ echo apply_filters('the_content', $fresh->post_content); ?>
 
 	/**
 	 * Get list of banners to include in today's RSS
-	 * @param string $lang
+	 * @param string $lang Shortcode for language. Default 'en'
+	 * @param string $context Accepts 'rss' or 'web'. Default 'rss'.
 	 * @return WP_Post[] Array of banner posts
 	 * @since 1.3.0
 	 */
-	private function get_todays_banners($lang = 'en') {
+	private function get_todays_banners($lang = 'en', $context = 'rss') {
+		$now = new DateTime(current_time('mysql'));
 		$args = array(
-				'post_type' => 'fresh-banner',
-				'posts_per_page' => -1,
-				'meta_query' => array(
-						array(
-								'key' => 'languages',
-								'value' => $lang,
-						),
-						array(
-								'type' => 'DATE',
-								'key' => 'start_date',
-								'value' => current_time('Y-m-d'),
-								'compare' => '<=',
-						),
-						array(
-								'key' => 'end_date',
-								'value' => current_time('Y-m-d'),
-								'compare' => '>=',
-						),
+			'post_type' => 'fresh-banner',
+			'posts_per_page' => -1,
+			'meta_query' => array(
+				array(
+					'key' => 'languages',
+					'value' => $lang,
 				),
+				array(
+					'type' => 'DATE',
+					'key' => 'start_date',
+					'value' => current_time('Y-m-d'),
+					'compare' => '<=',
+				),
+				array(
+					'key' => 'end_date',
+					'value' => current_time('Y-m-d'),
+					'compare' => '>=',
+				),
+				array(
+					'key' => 'location',
+					'value' => $context,
+				),
+				array(
+					'key' => 'days',
+					'value' => $now->format('w'),
+				),
+			),
 		);
 		return get_posts($args);
 	}

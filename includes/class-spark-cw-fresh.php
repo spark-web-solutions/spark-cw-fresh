@@ -166,6 +166,10 @@ class Spark_Cw_Fresh {
 		add_action('admin_init', array($plugin_admin, 'updates'));
 		add_action('admin_init', array($plugin_admin, 'register_settings'));
 		add_action('admin_menu', array($plugin_admin, 'menu'));
+		add_filter('manage_fresh-banner_posts_columns', array($plugin_admin, 'banner_admin_columns_register'));
+		add_action('manage_fresh-banner_posts_custom_column', array($plugin_admin, 'banner_admin_column_display'), 10, 2);
+		add_filter('manage_edit-fresh-banner_sortable_columns', array($plugin_admin, 'banner_admin_column_register_sortable'));
+		add_filter('request', array($plugin_admin, 'banner_column_orderby'));
 //		 add_action('admin_enqueue_scripts', array($plugin_admin, 'enqueue_styles'));
 //		 add_action('admin_enqueue_scripts', array($plugin_admin, 'enqueue_scripts'));
 	}
@@ -336,37 +340,116 @@ class Spark_Cw_Fresh {
 			}
 		}
 		$meta_fields = array(
-				array(
-						'title' => __('Languages', 'spark-cw-fresh'),
-						'field_name' => 'languages',
-						'type' => 'checkboxes',
-						'options' => $language_choices,
+			array(
+				'title' => __('Link', 'spark-cw-fresh'),
+				'description' => 'The URL the user should be taken to if they click on the banner',
+				'field_name' => 'url',
+				'type' => 'url',
+			),
+			array(
+				'title' => __('Languages', 'spark-cw-fresh'),
+				'field_name' => 'languages',
+				'type' => 'checkboxes',
+				'options' => $language_choices,
+			),
+			array(
+				'title' => __('Location', 'spark-cw-fresh'),
+				'description' => 'Where the banner will be shown',
+				'field_name' => 'location',
+				'type' => 'checkboxes',
+				'options' => array(
+					array(
+						'label' => 'In RSS Feed',
+						'value' => 'rss',
+					),
+					array(
+						'label' => 'On Website',
+						'value' => 'web',
+					),
 				),
-				array(
-						'title' => __('Start Date', 'spark-cw-fresh'),
-						'description' => 'The first date the banner will be shown',
-						'field_name' => 'start_date',
-						'type' => 'date',
+			),
+			array(
+				'title' => __('Start Date', 'spark-cw-fresh'),
+				'description' => 'The first date the banner will be shown',
+				'field_name' => 'start_date',
+				'type' => 'date',
+			),
+			array(
+				'title' => __('End Date', 'spark-cw-fresh'),
+				'description' => 'The last date the banner will be shown',
+				'field_name' => 'end_date',
+				'type' => 'date',
+			),
+			array(
+				'title' => __('Days', 'spark-cw-fresh'),
+				'description' => 'Which days of the week the banner will be shown',
+				'field_name' => 'days',
+				'type' => 'checkboxes',
+				'options' => array(
+					array(
+						'label' => 'Sunday',
+						'value' => 0,
+					),
+					array(
+						'label' => 'Monday',
+						'value' => 1,
+					),
+					array(
+						'label' => 'Tuesday',
+						'value' => 2,
+					),
+					array(
+						'label' => 'Wednesday',
+						'value' => 3,
+					),
+					array(
+						'label' => 'Thursday',
+						'value' => 4,
+					),
+					array(
+						'label' => 'Friday',
+						'value' => 5,
+					),
+					array(
+						'label' => 'Saturday',
+						'value' => 6,
+					),
 				),
-				array(
-						'title' => __('End Date', 'spark-cw-fresh'),
-						'description' => 'The last date the banner will be shown',
-						'field_name' => 'end_date',
-						'type' => 'date',
-				),
-				array(
-						'title' => __('Link', 'spark-cw-fresh'),
-						'description' => 'The URL the user should be taken to if they click on the banner',
-						'field_name' => 'url',
-						'type' => 'url',
-				),
+			),
 		);
 		new Spark_Cw_Fresh_Meta(__('Banner Details', 'spark-cw-fresh'), array('fresh-banner'), $meta_fields, 'normal');
 
 		$ia_ver = get_option('spark-cw-fresh-version-ia', 0);
 		if (version_compare($ia_ver, $this->version, '<')) {
+			$this->apply_updates($ia_ver, $this->version);
 			update_option('spark-cw-fresh-version-ia', $this->version);
 			add_action('init', 'flush_rewrite_rules');
+		}
+	}
+
+	private function apply_updates($from_version, $to_version) {
+		if (version_compare($from_version, '1.4.0', '<')) {
+			// Add default values for new meta fields added in 1.4.0
+			$args = array(
+				'post_type' => 'fresh-banner',
+				'posts_per_page' => -1,
+				'fields' => 'ids',
+			);
+			$banners = get_posts($args);
+			foreach ($banners as $banner_id) {
+				if (!metadata_exists('post', $banner_id, 'location')) {
+					add_post_meta($banner_id, 'location', 'rss');
+				}
+				if (!metadata_exists('post', $banner_id, 'days')) {
+					add_post_meta($banner_id, 'days', 0);
+					add_post_meta($banner_id, 'days', 1);
+					add_post_meta($banner_id, 'days', 2);
+					add_post_meta($banner_id, 'days', 3);
+					add_post_meta($banner_id, 'days', 4);
+					add_post_meta($banner_id, 'days', 5);
+					add_post_meta($banner_id, 'days', 6);
+				}
+			}
 		}
 	}
 

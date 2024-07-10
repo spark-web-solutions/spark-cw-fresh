@@ -41,18 +41,18 @@ class Spark_Cw_Fresh_Activator {
      * @since 1.0.0
 	 */
 	public static function activate($network_wide = false) {
-    	if (is_multisite() && $network_wide) {
-    		// Get all blogs in the network and run our logic on each one
-	    	global $wpdb;
-    		$blog_ids = $wpdb->get_col('SELECT blog_id FROM '.$wpdb->blogs);
-    		foreach ($blog_ids as $blog_id) {
-    			switch_to_blog($blog_id);
-    			self::set_up();
-    			restore_current_blog();
-    		}
-    	} else {
-    		self::set_up();
-    	}
+		if (is_multisite() && $network_wide) {
+			// Get all blogs in the network and run our logic on each one
+			global $wpdb;
+			$blog_ids = $wpdb->get_col('SELECT blog_id FROM '.$wpdb->blogs);
+			foreach ($blog_ids as $blog_id) {
+				switch_to_blog($blog_id);
+				self::set_up();
+				restore_current_blog();
+			}
+		} else {
+			self::set_up();
+		}
 	}
 
 	/**

@@ -114,27 +114,27 @@ class Spark_Cw_Fresh_Admin {
         $languages = Spark_Cw_Fresh::$languages;
         unset($languages['en-au']); // We always want English, so don't include it as an option
         $section_cfg = array(
-                array(
-                        'key' => 'spark-cw-fresh-general-settings',
-                        'title' => __('General Settings', 'spark-cw-fresh'),
-                        'page' => 'spark-cw-fresh-settings',
-                        'wp_option' => 'spark-cw-fresh-settings',
-                        'callback' => false,
-                        'fields' => array(
-                                array(
-                                        'key' => 'spark-cw-fresh-settings-language',
-                                        'title' => __('Additional Languages', 'spark-cw-fresh'),
-                                        'type' => 'checkboxes',
-                                        'args' => array(),
-                                        'choices' => $languages,
-                                        'register_settings_args' => array(
-                                                'type' => 'string',
-                                                'sanitize_callback' => null,
-                                                'default' => array(),
-                                        ),
-                                ),
-                        ),
-                ),
+			array(
+				'key' => 'spark-cw-fresh-general-settings',
+				'title' => __('General Settings', 'spark-cw-fresh'),
+				'page' => 'spark-cw-fresh-settings',
+				'wp_option' => 'spark-cw-fresh-settings',
+				'callback' => false,
+				'fields' => array(
+					array(
+						'key' => 'spark-cw-fresh-settings-language',
+						'title' => __('Additional Languages', 'spark-cw-fresh'),
+						'type' => 'checkboxes',
+						'args' => array(),
+						'choices' => $languages,
+						'register_settings_args' => array(
+							'type' => 'string',
+							'sanitize_callback' => null,
+							'default' => array(),
+						),
+					),
+				),
+			),
         );
 
         foreach ($section_cfg as $section) {
@@ -150,7 +150,7 @@ class Spark_Cw_Fresh_Admin {
      * The callback to render settings fields
      * @since 1.0.0
      */
-    function render_section_fields($param) {
+    public function render_section_fields($param) {
         $value = maybe_unserialize(get_option($param['key']));
         if (empty($value)) {
             $value = $param['register_settings_args']['default'];
@@ -186,4 +186,71 @@ class Spark_Cw_Fresh_Admin {
                 break;
         }
     }
+
+	public function banner_admin_columns_register($columns) {
+		$columns['Active Dates'] = 'Active Dates';
+		$columns['Display'] = 'Display';
+
+		return $columns;
+	}
+
+	public function banner_admin_column_display($column_name, $post_id) {
+		switch ($column_name) {
+			case 'Active Dates':
+				$start = get_post_meta($post_id, 'start_date', true);
+				$end = get_post_meta($post_id, 'end_date', true);
+				if (!empty($start) && !empty($end)) {
+					$start_date = new DateTime($start);
+					$end_date = new DateTime($end);
+					$now = new DateTime(current_time('mysql'));
+					$value = $start_date->format(get_option('date_format'));
+					if ($end_date > $start_date) {
+						$value .= ' to '.$end_date->format(get_option('date_format'));
+					}
+				} else {
+					$value = '-';
+				}
+				echo $value;
+				break;
+			case 'Display':
+				$fresh_languages = Spark_Cw_Fresh::$languages;
+				foreach ($fresh_languages as $code => $lang) {
+					$shortcode = substr($code, 0, strpos($code, '-'));
+					$language_codes[$shortcode] = $lang;
+				}
+				$languages = get_post_meta($post_id, 'languages');
+				$languages = array_map(function($lang) use ($language_codes) {
+					return $language_codes[$lang];
+				}, $languages);
+				echo implode('/', $languages).'<br>';
+				$location = get_post_meta($post_id, 'location');
+				echo strtoupper(implode('/', $location)).'<br>';
+				$days = get_post_meta($post_id, 'days');
+				$days = array_map(function($day) {
+					return jddayofweek($day - 1, 2);
+				}, $days);
+				echo implode('/', $days);
+				break;
+		}
+	}
+
+	public function banner_admin_column_register_sortable($columns) {
+		$columns['Active Dates'] = 'active_dates';
+
+		return $columns;
+	}
+
+	public function banner_column_orderby($vars) {
+		if (is_admin() && $vars['post_type'] == 'fresh-banner' && isset($vars['orderby'])) {
+			switch ($vars['orderby']) {
+				case 'active_dates':
+					$vars = array_merge($vars, array(
+							'meta_key' => 'start_date',
+							'orderby' => 'meta_value',
+					));
+					break;
+			}
+		}
+		return $vars;
+	}
 }

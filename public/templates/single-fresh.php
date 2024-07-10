@@ -40,6 +40,9 @@ if (!empty($meta['audio'])) {
 <?php
 }
 the_content();
+$plugin_public = new Spark_Cw_Fresh_Public('spark-cw-fresh', SPARK_CW_FRESH_VERSION);
+$banner_content = $plugin_public->get_banner_content('en', 'web');
+echo $banner_content;
 ?>
 </article>
 <?php

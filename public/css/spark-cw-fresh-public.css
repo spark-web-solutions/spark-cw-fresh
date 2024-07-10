@@ -3,6 +3,7 @@
 .fresh-wrapper .video iframe {position: absolute; top: 0; left: 0; width: 100%; height: 100%;}
 .fresh-wrapper .image {text-align: center;}
 .fresh-wrapper .audio audio {width: 100%;}
+.fresh-wrapper .fresh-banner {text-align: center;}
 
 .fresh-posts-wrapper > .fresh-preview {margin-bottom: 1rem;}
 .fresh-posts-wrapper > .fresh-preview a {display: block;}
