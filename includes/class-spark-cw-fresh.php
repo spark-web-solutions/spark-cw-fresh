@@ -166,6 +166,7 @@ class Spark_Cw_Fresh {
 		add_action('admin_init', array($plugin_admin, 'updates'));
 		add_action('admin_init', array($plugin_admin, 'register_settings'));
 		add_action('admin_menu', array($plugin_admin, 'menu'));
+		add_filter('plugin_action_links_'.$this->plugin_name.'/'.$this->plugin_name.'.php', array($plugin_admin, 'plugin_action_links'));
 		add_filter('manage_fresh-banner_posts_columns', array($plugin_admin, 'banner_admin_columns_register'));
 		add_action('manage_fresh-banner_posts_custom_column', array($plugin_admin, 'banner_admin_column_display'), 10, 2);
 		add_filter('manage_edit-fresh-banner_sortable_columns', array($plugin_admin, 'banner_admin_column_register_sortable'));

@@ -85,6 +85,20 @@ class Spark_Cw_Fresh_Admin {
         add_submenu_page('edit.php?post_type=fresh', __('FRESH Settings', 'spark-cw-fresh'), __('Settings', 'spark-cw-fresh'), 'manage_options', 'spark-cw-fresh-settings', array($this, 'settings_page'));
     }
 
+	/**
+	 * Add our custom links in plugins list
+	 * @since 1.4.0
+	 */
+	public function plugin_action_links($links) {
+		$settings_url = esc_url(add_query_arg(array('page' => 'spark-cw-fresh-settings'), admin_url('edit.php?post_type=fresh')));
+		$settings_link = "<a href='$settings_url'>".__('Settings', 'spark-cw-fresh').'</a>';
+		array_push($links, $settings_link);
+		$documentation_url = esc_url(plugin_dir_url(SPARK_CW_FRESH_PATH).'spark-cw-fresh.pdf');
+		$documentation_link = "<a href='$documentation_url' target='_blank'>".__('Documentation', 'spark-cw-fresh').'</a>';
+		array_push($links, $documentation_link);
+		return $links;
+	}
+
     /**
      * Settings page content
      * @since 1.0.0
