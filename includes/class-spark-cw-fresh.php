@@ -427,6 +427,12 @@ class Spark_Cw_Fresh {
 		}
 	}
 
+	/**
+	 * Apply DB updates when plugin updated
+	 * @param string $from_version
+	 * @param string $to_version
+	 * @since 1.4.0
+	 */
 	private function apply_updates($from_version, $to_version) {
 		if (version_compare($from_version, '1.4.0', '<')) {
 			// Add default values for new meta fields added in 1.4.0

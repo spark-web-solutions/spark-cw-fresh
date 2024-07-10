@@ -187,6 +187,12 @@ class Spark_Cw_Fresh_Admin {
         }
     }
 
+	/**
+	 * Register custom banner admin columns
+	 * @param array $columns
+	 * @return array
+	 * @since 1.4.0
+	 */
 	public function banner_admin_columns_register($columns) {
 		$columns['Active Dates'] = 'Active Dates';
 		$columns['Display'] = 'Display';
@@ -194,6 +200,12 @@ class Spark_Cw_Fresh_Admin {
 		return $columns;
 	}
 
+	/**
+	 * Output content for custom banner admin columns
+	 * @param string $column_name
+	 * @param int $post_id
+	 * @since 1.4.0
+	 */
 	public function banner_admin_column_display($column_name, $post_id) {
 		switch ($column_name) {
 			case 'Active Dates':
@@ -234,12 +246,24 @@ class Spark_Cw_Fresh_Admin {
 		}
 	}
 
+	/**
+	 * Register custom banner admin column as sortable
+	 * @param array $columns
+	 * @return array
+	 * @since 1.4.0
+	 */
 	public function banner_admin_column_register_sortable($columns) {
 		$columns['Active Dates'] = 'active_dates';
 
 		return $columns;
 	}
 
+	/**
+	 * Allow sorting banners by start date in admin
+	 * @param array $vars
+	 * @return array
+	 * @since 1.4.0
+	 */
 	public function banner_column_orderby($vars) {
 		if (is_admin() && $vars['post_type'] == 'fresh-banner' && isset($vars['orderby'])) {
 			switch ($vars['orderby']) {

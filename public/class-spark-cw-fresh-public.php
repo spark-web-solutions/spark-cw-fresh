@@ -253,6 +253,7 @@ echo apply_filters('the_content', $fresh->post_content); ?>
 	 * @param string $context Accepts 'rss' or 'web'. Default 'rss'.
 	 * @return string
 	 * @since 1.3.0
+	 * @since 1.4.0 Added $context parameter
 	 */
 	public function get_banner_content($lang = 'en', $context = 'rss') {
 		$html = '';
@@ -282,6 +283,7 @@ echo apply_filters('the_content', $fresh->post_content); ?>
 	 * @param string $context Accepts 'rss' or 'web'. Default 'rss'.
 	 * @return WP_Post[] Array of banner posts
 	 * @since 1.3.0
+	 * @since 1.4.0 Added $context parameter
 	 */
 	private function get_todays_banners($lang = 'en', $context = 'rss') {
 		$now = new DateTime(current_time('mysql'));
