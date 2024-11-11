@@ -255,8 +255,13 @@ class Spark_Cw_Fresh_Public {
 			$lang = $parts[3];
 		}
 
-		$now = current_time(DATE_RSS, false);
+		$today = current_time('Y-m-d', false);
 		$fresh = $this->get_todays_fresh($lang);
+		$fresh_date = new DateTime($fresh->post_date, wp_timezone());
+		if ($fresh_date->format('Y-m-d') != $today) {
+			header('Status: 503');
+			exit;
+		}
 
 		$rss  = '<?xml version="1.0"?>'."\n";
 		$rss .= '<rss version="2.0" xmlns:media="http://search.yahoo.com/mrss/">'."\n";
@@ -265,8 +270,8 @@ class Spark_Cw_Fresh_Public {
 		$rss .= '	<link>'.site_url('/fresh/').'</link>'."\n";
 		$rss .= '	<description>Today\'s FRESH</description>'."\n";
 		$rss .= '	<language>'.get_post_meta($fresh->ID, '_lang', true).'</language>'."\n";
-		$rss .= '	<pubDate>'.$now.'</pubDate>'."\n";
-		$rss .= '	<lastBuildDate>'.$now.'</lastBuildDate>'."\n";
+		$rss .= '	<pubDate>'.$fresh_date->format(DATE_RSS).'</pubDate>'."\n";
+		$rss .= '	<lastBuildDate>'.$fresh_date->format(DATE_RSS).'</lastBuildDate>'."\n";
 		$rss .= '	<managingEditor>'.get_option('admin_email').'</managingEditor>'."\n";
 		$rss .= '	<item>'."\n";
 		$rss .= '	  <title>'.$fresh->post_title.'</title>'."\n";
@@ -277,7 +282,7 @@ class Spark_Cw_Fresh_Public {
 		$rss .= '	  <description>'."\n";
 		$rss .= '		<![CDATA['.$post_content.']]>'."\n";
 		$rss .= '	  </description>'."\n";
-		$rss .= '	  <pubDate>'.$now.'</pubDate>'."\n";
+		$rss .= '	  <pubDate>'.$fresh_date->format(DATE_RSS).'</pubDate>'."\n";
 		if (has_post_thumbnail($fresh->ID)) {
 			$featured_image = get_post_thumbnail_id($fresh->ID);
 			$image = wp_get_attachment_image_src($featured_image, 'full');
