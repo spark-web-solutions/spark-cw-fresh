@@ -8,7 +8,7 @@
  * Plugin URI:  https://christianityworks.com
  * Update URI:  https://christianityworks.com
  * Description: Embed FRESH on your site.
- * Version:     1.4.0
+ * Version:     1.4.1
  * Author:      Spark Web Solutions
  * Author URI:  https://sparkweb.com.au
  * Requires at least: 5.3.0
@@ -26,7 +26,7 @@ if (!defined('WPINC')) {
 /**
  * Current plugin version.
  */
-define('SPARK_CW_FRESH_VERSION', '1.4.0');
+define('SPARK_CW_FRESH_VERSION', '1.4.1');
 define('SPARK_CW_FRESH_PATH', __FILE__);
 
 /**
